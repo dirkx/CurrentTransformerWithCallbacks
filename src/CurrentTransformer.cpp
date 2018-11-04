@@ -89,15 +89,19 @@ bool CurrentTransformer::hasCurrent() {
 
 void CurrentTransformer::callbackCheck() {
      bool nstate = hasCurrent();
-     if (nstate != state) {
-       // Sort of expect the state change to happen within 3 seconds; otherwise we abort
-       //
-       if (millis() - lastStateChange > 3000) {
+
+     if (nstate == state) 
+	return;
+
+     // Sort of expect the state change to happen within 3 seconds; otherwise we abort
+     //
+     if (millis() - lastStateChange > 3000) {
          lastStateChange = millis();
          notInState = 0;
        };
        notInState ++;
      }
+
      if (notInState <  10)
        return;
 
