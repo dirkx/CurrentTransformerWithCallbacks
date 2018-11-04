@@ -1,4 +1,5 @@
 Rquires a circut such as
+```
                                DC VCC (or ADC ref)
                                  |
                                  |
@@ -18,6 +19,7 @@ Rquires a circut such as
     50hz household mains    |    |                    |
                             |    |                    |
                            DC ground               DC ground
+```
 
 At point 1 there is a bias/dc-offset voltage of half the VCC (or more accurately, of 
 whatever is the reference frequency of ADC; i.e. the 'max' ADC level). The C is typically
