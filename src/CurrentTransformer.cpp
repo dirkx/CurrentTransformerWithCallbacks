@@ -98,9 +98,9 @@ void CurrentTransformer::callbackCheck() {
      if (millis() - lastStateChange > 3000) {
          lastStateChange = millis();
          notInState = 0;
-       };
-       notInState ++;
-     }
+     };
+
+     notInState ++;
 
      if (notInState <  10)
        return;
