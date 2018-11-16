@@ -23,14 +23,13 @@ class CurrentTransformer {
    void setOnLimit(float limit);
    float onLimit(float limit);
 
-   void begin();
-
    float sd();
    float avg();
    bool hasCurrent();
 
    void sample();
  private:
+   Ticker * _currentTicker;
    uint8_t _pin;
    uint16_t _hz,  _interval;
    uint32_t _avg, _sd, _sd2;
@@ -38,7 +37,8 @@ class CurrentTransformer {
    bool state;
    uint8_t notInState;
    unsigned long lastStateChange;
-   float _limit;
+   float _limit, _refV;
+   uint32_t _bitsDiv;
 
    THandlerFunction_Callback _callbackOn,  _callbackOff;
 
