@@ -10,6 +10,7 @@
 class CurrentTransformer {
  public:
    CurrentTransformer(uint8_t pin, uint16_t sampleFrequency = 200 );
+   ~CurrentTransformer();
 
    typedef std::function<void()> THandlerFunction_Callback;
    CurrentTransformer& onCurrentOn(THandlerFunction_Callback fn);

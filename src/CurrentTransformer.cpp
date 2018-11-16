@@ -1,5 +1,6 @@
 #include <CurrentTransformer.h>
 #include <Arduino.h>
+#include <ACNode.h>
 
 #define BIAS_N	(1) /*seconds*/	// calculate the DC offset as a rolling window over this many seconds.
 
@@ -12,19 +13,26 @@ class CurrentTransformer;
 //
 static std::list<CurrentTransformer> _currentCoils;
 static Ticker _currentTicker = Ticker();
+static Ticker _currentTicker2;
 
-
-CurrentTransformer::CurrentTransformer(uint8_t pin, uint16_t sampleFrequency ) : _pin(pin),  _hz(sampleFrequency)
+CurrentTransformer::CurrentTransformer(uint8_t pin, uint16_t sampleFrequency ) 
+	: _pin(pin),  _hz(sampleFrequency)
 {
-
+	// na.
 }
+
+CurrentTransformer::~CurrentTransformer() {
+	// na
+}
+
 void CurrentTransformer::begin() 
 {
      if (_currentCoils.size() == 0) {
-        _currentTicker.attach(1000 / _hz /* mSecond */, [](){  
-		for (CurrentTransformer c : _currentCoils) 
+        _currentTicker.attach_ms(1000 / _hz /* mSecond */, [](){  
+		for (CurrentTransformer & c : _currentCoils) 
 			c.sample(); 
 	});
+     	Log.println("Ticker() callback configured.");
      };
 
      pinMode(_pin, INPUT); // analog input.
@@ -33,6 +41,7 @@ void CurrentTransformer::begin()
      _limit = 0.125;
       _n = 0;
      _interval = 0;
+     Log.println("Ticker() started.");
 };
 
 
@@ -63,6 +72,7 @@ float CurrentTransformer::onLimit(float limit) {
    //
 void CurrentTransformer::sample() {
      uint16_t val,hz0,hz1,dif;
+
      val = analogRead(_pin);
      hz0 = (_n < _hz) ? _n : _hz;
      hz1 = hz0 + 1;
@@ -71,7 +81,8 @@ void CurrentTransformer::sample() {
      _avg = ((double) _n * _avg + (double)val      ) / ((double)_n + 1.);
      _sd  = (hz0 * _sd + dif       ) / hz1;
 
-     // if sd2 is 32 bits; and the ADC 10 bits — then we should stay within 32-2x10 - a few 100 samples/second I guess.
+     // if sd2 is 32 bits; and the ADC 10 bits — then we should stay within 32-2x10 - a 
+    // few 100 samples/second I guess.
      _sd2 = (hz0 * _sd2 + dif * dif) / hz1; 
 
       if (_n < (BIAS_N * _hz))
