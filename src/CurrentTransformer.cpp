@@ -10,7 +10,7 @@ class CurrentTransformer;
 // https://github.com/esp8266/Arduino/pull/5030 for what 
 // is needed.
 //
-static void _sample(uint32_t arg) {
+static void IRAM_ATTR _sample(uint32_t arg) {
 	CurrentTransformer * c = (CurrentTransformer*)arg;
 	c->sample();
 };
@@ -58,7 +58,7 @@ float CurrentTransformer::onLimit(float limit) {
 // Keep this routine as short and concise as posible; as we run on
 // an interrupt/timer.
 //
-void CurrentTransformer::sample() {
+void IRAM_ATTR CurrentTransformer::sample() {
      uint16_t val,hz0,hz1,dif, N;
 
      N = BIAS_N * _hz; // averaging window.
@@ -83,6 +83,7 @@ void CurrentTransformer::sample() {
      _interval = 0;
 
      bool nstate = hasCurrent();
+
      if (nstate == state) 
 	return;
 
@@ -93,20 +94,25 @@ void CurrentTransformer::sample() {
          notInState = 0;
      };
 
-     if (notInState++ <  3)
-       return;
+     notInState++;
+}
 
-     state = nstate;
+void CurrentTransformer::loop() {
+     if (notInState <  3)
+       return;
      notInState = 0;
+
+     state = hasCurrent();
+
      lastStateChange = millis();
 
      if (_callback)
-       _callback(nstate ? ON : OFF);
+       _callback(state ? ON : OFF);
 
-     if (nstate && _callbackOn)
+     if (state && _callbackOn)
        _callbackOn();
 
-     if (!nstate && _callbackOff)
+     if (!state && _callbackOff)
        _callbackOff();
 };
 

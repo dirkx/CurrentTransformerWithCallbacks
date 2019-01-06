@@ -23,6 +23,7 @@ class CurrentTransformer {
    void setOnLimit(float limit);
    float onLimit(float limit);
 
+   void loop();
    float sd();
    float avg();
    bool hasCurrent();
