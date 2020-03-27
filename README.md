@@ -1,4 +1,4 @@
-Rquires a circut such as
+Requires a circuit such as
 ```
                                DC VCC (or ADC ref)
                                  |
@@ -40,4 +40,54 @@ reverse diode to the ground and VCC; to `cap' any voltages that are (0.6 volt)
 higher than either.
 
 See https://learn.openenergymonitor.org/electricity-monitoring/ct-sensors/interface-with-arduino
+
+= Use 
+
+See the examples for typical use. The simplest is:
+
+   CurrentTransformer sensor = CurrentTransformer( 2 );
+   double factor = 3.12; // = Voltage x CoilRatio / VreferenceADC / RburdenResitor
+
+   ...
+   void loop() {
+      ...
+      Serial.print(sensor.sd() * factor);
+ 
+
+If you are after on/off (this is what we use it for at the https://makerspaceleiden.nl -- to see of machines are on or off; then it may be easier to use callbacks:
+
+   CurrentTransformer sensor = CurrentTransformer( 2 );
+   
+   void setup() {
+       ....
+       sensor.onCurrentOn([]() {
+            Serial.println("Its on !");
+       });
+       sensor.onCurrentOff([]() {
+            Serial.println("Its off!t");
+       });
+   }
+
+   void loop() {
+          // nothing to do - all done in callbacks.
+   }
+
+Or alternatively ask a whole lot more:
+
+  sensor.onCurrentChange([](CurrentTransformer::state_t state) {
+   switch (state) {
+     case CurrentTransformer::ON:
+       Serial.println("Change to on");
+       break;
+     case CurrentTransformer::OFF:
+       Serial.println("Change to off");
+       break;
+     case CurrentTransformer::UNKNOWN:
+       Serial.println("Unknown state");
+       break;
+   }
+  });
+
+by registering for a change callback.
+
 
