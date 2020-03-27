@@ -1,18 +1,18 @@
-#include <CurrentTransformer.h>
+#include <CurrentTransformerWithCallbacks.h>
 
-CurrentTransformer sensor = CurrentTransformer( 2 );
+CurrentTransformerWithCallbacks sensor = CurrentTransformerWithCallbacks( 2 );
 
 void setup() {
 
- sensor.onCurrentChange([](CurrentTransformer::state_t state) {
+ sensor.onCurrentChange([](CurrentTransformerWithCallbacks::state_t state) {
    switch (state) {
-     case CurrentTransformer::ON:
+     case CurrentTransformerWithCallbacks::ON:
        Serial.println("Change to on");
        break;
-     case CurrentTransformer::OFF:
+     case CurrentTransformerWithCallbacks::OFF:
        Serial.println("Change to off");
        break;
-     case CurrentTransformer::UNKNOWN:
+     case CurrentTransformerWithCallbacks::UNKNOWN:
        Serial.println("Unknown state");
        break;
    }

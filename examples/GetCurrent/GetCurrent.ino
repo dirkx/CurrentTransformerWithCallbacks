@@ -1,6 +1,6 @@
-#include <CurrentTransformer.h>
+#include <CurrentTransformerWithCallbacks.h>
 
-CurrentTransformer sensor = CurrentTransformer( 2 );
+CurrentTransformerWithCallbacks sensor = CurrentTransformerWithCallbacks( 2 );
 
 void setup() {
 }

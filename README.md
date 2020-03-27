@@ -1,4 +1,4 @@
-# CurrentTransformer
+# CurrentTransformerWithCallbacks
 
 ## Electronics
 
@@ -53,7 +53,7 @@ See the examples for typical use.
 
 The simplest is:
 
-    CurrentTransformer sensor = CurrentTransformer( GPIO_PIN );
+    CurrentTransformerWithCallbacks sensor = CurrentTransformerWithCallbacks( GPIO_PIN );
     
     double factor = 3.12; // = Voltage x CoilRatio / VreferenceADC / RburdenResitor
     
@@ -66,7 +66,7 @@ The simplest is:
 ### on/off call backs
 If you are after on/off (this is what we use it for at the https://makerspaceleiden.nl -- to see of machines are on or off; then it may be easier to use callbacks:
 
-    CurrentTransformer sensor = CurrentTransformer( GPIO_PIN );
+    CurrentTransformerWithCallbacks sensor = CurrentTransformerWithCallbacks( GPIO_PIN );
    
     void setup() {
        ....
@@ -86,15 +86,15 @@ If you are after on/off (this is what we use it for at the https://makerspacelei
 
 Or alternatively ask a whole lot more:
 
-    sensor.onCurrentChange([](CurrentTransformer::state_t state) {
+    sensor.onCurrentChange([](CurrentTransformerWithCallbacks::state_t state) {
      switch (state) {
-       case CurrentTransformer::ON:
+       case CurrentTransformerWithCallbacks::ON:
          Serial.println("Change to on");
          break;
-       case CurrentTransformer::OFF:
+       case CurrentTransformerWithCallbacks::OFF:
          Serial.println("Change to off");
          break;
-       case CurrentTransformer::UNKNOWN:
+       case CurrentTransformerWithCallbacks::UNKNOWN:
          Serial.println("Unknown state");
          break;
      }

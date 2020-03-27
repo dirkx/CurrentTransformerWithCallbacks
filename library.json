@@ -2,11 +2,11 @@
   "name": "CurentCoil",
   "keywords": "current, coil, adc, analog, input, converter, signal",
   "description": "Coil, Transformer based current measurements using fast ADC sampling of waveform",
-  "include": "CurrentTransformer",
+  "include": "CurrentTransformerWithCallbacks",
   "repository":
   {
     "type": "git",
-    "url": "https://github.com/dirkx/CurrentTransformer.git"
+    "url": "https://github.com/dirkx/CurrentTransformerWithCallbacks.git"
   },
   "dependencies":
   {

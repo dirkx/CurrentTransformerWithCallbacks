@@ -7,18 +7,18 @@
 #include <list>
 #include <functional>
 
-class CurrentTransformer {
+class CurrentTransformerWithCallbacks {
  public:
-   CurrentTransformer(uint8_t pin, uint16_t sampleFrequency = 200 );
-   ~CurrentTransformer();
+   CurrentTransformerWithCallbacks(uint8_t pin, uint16_t sampleFrequency = 200 );
+   ~CurrentTransformerWithCallbacks();
 
    typedef std::function<void()> THandlerFunction_Callback;
-   CurrentTransformer& onCurrentOn(THandlerFunction_Callback fn);
-   CurrentTransformer& onCurrentOff(THandlerFunction_Callback fn);
+   CurrentTransformerWithCallbacks& onCurrentOn(THandlerFunction_Callback fn);
+   CurrentTransformerWithCallbacks& onCurrentOff(THandlerFunction_Callback fn);
 
    typedef enum { OFF, ON, UNKNOWN } state_t;
    typedef std::function<void(state_t state)> THandlerFunction_CallbackWithState;
-   CurrentTransformer& onCurrentChange(THandlerFunction_CallbackWithState fn);
+   CurrentTransformerWithCallbacks& onCurrentChange(THandlerFunction_CallbackWithState fn);
 
    void setOnLimit(float limit);
    float onLimit(float limit);

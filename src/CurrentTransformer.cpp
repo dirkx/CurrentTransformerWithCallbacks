@@ -1,21 +1,21 @@
-#include <CurrentTransformer.h>
+#include <CurrentTransformerWithCallbacks.h>
 #include <Arduino.h>
 #include <ACNode.h>
 
 #define BIAS_N	(3) /*seconds*/	// calculate the DC offset as a rolling window over this many seconds.
 
-class CurrentTransformer;
+class CurrentTransformerWithCallbacks;
 
 // Glue logic (ESP32's ticker does not yet have TArgs). See
 // https://github.com/esp8266/Arduino/pull/5030 for what 
 // is needed.
 //
 static void IRAM_ATTR _sample(uint32_t arg) {
-	CurrentTransformer * c = (CurrentTransformer*)arg;
+	CurrentTransformerWithCallbacks * c = (CurrentTransformerWithCallbacks*)arg;
 	c->sample();
 };
 
-CurrentTransformer::CurrentTransformer(uint8_t pin, uint16_t sampleFrequency ) 
+CurrentTransformerWithCallbacks::CurrentTransformerWithCallbacks(uint8_t pin, uint16_t sampleFrequency ) 
 	: _pin(pin),  _hz(sampleFrequency)
 {
      _currentTicker = new Ticker();
@@ -28,37 +28,37 @@ CurrentTransformer::CurrentTransformer(uint8_t pin, uint16_t sampleFrequency )
      _avg = _n = _sd = _sd2 = _interval = 0;
 }
 
-CurrentTransformer::~CurrentTransformer() {
+CurrentTransformerWithCallbacks::~CurrentTransformerWithCallbacks() {
 	// na
 }
 
-CurrentTransformer& CurrentTransformer::onCurrentOn(THandlerFunction_Callback fn) {
+CurrentTransformerWithCallbacks& CurrentTransformerWithCallbacks::onCurrentOn(THandlerFunction_Callback fn) {
      _callbackOn = fn;
      return *this;
 };
 
-CurrentTransformer& CurrentTransformer::onCurrentOff(THandlerFunction_Callback fn) {
+CurrentTransformerWithCallbacks& CurrentTransformerWithCallbacks::onCurrentOff(THandlerFunction_Callback fn) {
      _callbackOff = fn;
      return *this;
 };
 
-CurrentTransformer& CurrentTransformer::onCurrentChange(THandlerFunction_CallbackWithState fn) {
+CurrentTransformerWithCallbacks& CurrentTransformerWithCallbacks::onCurrentChange(THandlerFunction_CallbackWithState fn) {
      _callback = fn;
      return *this;
 };
 
-void CurrentTransformer::setOnLimit(float limit) {
+void CurrentTransformerWithCallbacks::setOnLimit(float limit) {
 	_limit = limit;
    };
 
-float CurrentTransformer::onLimit(float limit) {
+float CurrentTransformerWithCallbacks::onLimit(float limit) {
 	return _limit;
    };
 
 // Keep this routine as short and concise as posible; as we run on
 // an interrupt/timer.
 //
-void IRAM_ATTR CurrentTransformer::sample() {
+void IRAM_ATTR CurrentTransformerWithCallbacks::sample() {
      uint16_t val,hz0,hz1,dif, N;
 
      N = BIAS_N * _hz; // averaging window.
@@ -97,7 +97,7 @@ void IRAM_ATTR CurrentTransformer::sample() {
      notInState++;
 }
 
-void CurrentTransformer::loop() {
+void CurrentTransformerWithCallbacks::loop() {
      if (notInState <  3)
        return;
      notInState = 0;
@@ -116,15 +116,15 @@ void CurrentTransformer::loop() {
        _callbackOff();
 };
 
-float CurrentTransformer::sd() {
+float CurrentTransformerWithCallbacks::sd() {
      return sqrt(fabs((float)_sd2 - (float)_sd * (float)_sd)) / _bitsDiv / _bitsDiv * _refV;
 };
 
-float CurrentTransformer::avg() {
+float CurrentTransformerWithCallbacks::avg() {
 	return _refV * ((float) _avg) / _bitsDiv;
 };
 
-bool CurrentTransformer::hasCurrent() {
+bool CurrentTransformerWithCallbacks::hasCurrent() {
      return sd() > _limit;
 };
 
