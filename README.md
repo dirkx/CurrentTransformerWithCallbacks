@@ -1,3 +1,7 @@
+# CurrentTransformer
+
+## Electronics
+
 Requires a circuit such as
 ```
                                DC VCC (or ADC ref)
@@ -41,24 +45,30 @@ higher than either.
 
 See https://learn.openenergymonitor.org/electricity-monitoring/ct-sensors/interface-with-arduino
 
-= Use 
+## Use in code
 
-See the examples for typical use. The simplest is:
+See the examples for typical use. 
 
-   CurrentTransformer sensor = CurrentTransformer( 2 );
-   double factor = 3.12; // = Voltage x CoilRatio / VreferenceADC / RburdenResitor
+### reading
 
-   ...
-   void loop() {
+The simplest is:
+
+    CurrentTransformer sensor = CurrentTransformer( GPIO_PIN );
+    
+    double factor = 3.12; // = Voltage x CoilRatio / VreferenceADC / RburdenResitor
+    
+    ...
+    void loop() {
       ...
       Serial.print(sensor.sd() * factor);
  
 
+### on/off call backs
 If you are after on/off (this is what we use it for at the https://makerspaceleiden.nl -- to see of machines are on or off; then it may be easier to use callbacks:
 
-   CurrentTransformer sensor = CurrentTransformer( 2 );
+    CurrentTransformer sensor = CurrentTransformer( GPIO_PIN );
    
-   void setup() {
+    void setup() {
        ....
        sensor.onCurrentOn([]() {
             Serial.println("Its on !");
@@ -66,27 +76,29 @@ If you are after on/off (this is what we use it for at the https://makerspacelei
        sensor.onCurrentOff([]() {
             Serial.println("Its off!t");
        });
-   }
+    }
 
-   void loop() {
+    void loop() {
           // nothing to do - all done in callbacks.
-   }
+    }
+
+### get called when state changed
 
 Or alternatively ask a whole lot more:
 
-  sensor.onCurrentChange([](CurrentTransformer::state_t state) {
-   switch (state) {
-     case CurrentTransformer::ON:
-       Serial.println("Change to on");
-       break;
-     case CurrentTransformer::OFF:
-       Serial.println("Change to off");
-       break;
-     case CurrentTransformer::UNKNOWN:
-       Serial.println("Unknown state");
-       break;
-   }
-  });
+    sensor.onCurrentChange([](CurrentTransformer::state_t state) {
+     switch (state) {
+       case CurrentTransformer::ON:
+         Serial.println("Change to on");
+         break;
+       case CurrentTransformer::OFF:
+         Serial.println("Change to off");
+         break;
+       case CurrentTransformer::UNKNOWN:
+         Serial.println("Unknown state");
+         break;
+     }
+    });
 
 by registering for a change callback.
 
