@@ -1,4 +1,4 @@
-#include <CurrentTransformerWithCallbacks.h>
+#include <CurrentTransformer.h>
 #include <Arduino.h>
 #include <ACNode.h>
 
