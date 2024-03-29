@@ -102,4 +102,4 @@ Or alternatively ask a whole lot more:
 
 by registering for a change callback.
 
-
+Version 2.01 - 2024/03/29 -- The include for CurrentTransformer will be phased out. Use CurrentTransformerWithCallbacks.h

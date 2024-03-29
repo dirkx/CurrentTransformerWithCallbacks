@@ -1,5 +1,5 @@
 {
-  "name": "CurentCoil",
+  "name": "CurrentTransformerWithCallbacks",
   "keywords": "current, coil, adc, analog, input, converter, signal",
   "description": "Coil, Transformer based current measurements using fast ADC sampling of waveform",
   "include": "CurrentTransformerWithCallbacks",

@@ -1,6 +1,5 @@
-#include <CurrentTransformer.h>
+#include <CurrentTransformerWithCallbacks.h>
 #include <Arduino.h>
-#include <ACNode.h>
 
 #define BIAS_N	(3) /*seconds*/	// calculate the DC offset as a rolling window over this many seconds.
 
